@@ -4,6 +4,7 @@ require_once("vendor/autoload.php");
 
 use \Slim\Slim;
 use \Joaovictorbs\Page;
+use \Joaovictorbs\PageAdmin;
 
 $app = new Slim();
 
@@ -16,6 +17,14 @@ $app->get('/', function() {
 	$page->setTpl("index"); # passa template de html
 
 	# acaba chamando o construtor e criando o footer
+
+});
+
+$app->get('/admin', function() { # acesso ao admin
+    
+	$page = new PageAdmin();
+
+	$page->setTpl("index");
 
 });
 
