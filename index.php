@@ -2,18 +2,21 @@
 
 require_once("vendor/autoload.php");
 
-$app = new \Slim\Slim();
+use \Slim\Slim;
+use \Joaovictorbs\Page;
+
+$app = new Slim();
 
 $app->config('debug', true);
 
 $app->get('/', function() {
     
-	$sql = new Joaovictorbs\DB\Sql();
+	$page = new Page(); # chama construtor / cria header
 
-	$results = $sql->select("SELECT * FROM tb_users");
+	$page->setTpl("index"); # passa template de html
 
-	echo json_encode($results);
-	
+	# acaba chamando o construtor e criando o footer
+
 });
 
 $app->run();
