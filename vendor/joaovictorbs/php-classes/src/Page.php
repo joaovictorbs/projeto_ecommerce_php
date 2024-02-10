@@ -9,16 +9,18 @@ class Page {
     private $tpl;
     private $options = [];
     private $defaults = [
-        "data"=>[ ]
+        "header"=>true,
+        "footer"=>true,
+        "data"=>[]
     ];
 
-    public function __construct($opts = array())
+    public function __construct($opts = array(), $tpl_dir = "/views/admin/")
     {
 
         $this->options = array_merge($this->defaults, $opts); # caso passe valores, substitue os padroes
         
 	    $config = array(
-            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"]."/views/",         # diretorio root do servidor / pasta de htmtl
+            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir,         # diretorio root do servidor / pasta de htmtl
             "cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",   # pasta de cache
             "debug"         => false
        );
@@ -28,8 +30,8 @@ class Page {
         $this->tpl = new Tpl;
 
         $this->setData($this->options["data"]);
-    
-        $this->tpl->draw( "header" ); # cria header
+
+        if ($this->options["header"] === true) $this->tpl->draw( "header" ); # cria header
     }
 
 
@@ -49,7 +51,7 @@ class Page {
 
     public function __destruct()
     {
-        $this->tpl->draw("footer"); # cria footer
+        if ($this->options["footer"] === true) $this->tpl->draw("footer"); # cria footer
     }
 
 }
