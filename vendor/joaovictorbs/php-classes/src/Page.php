@@ -14,13 +14,13 @@ class Page {
         "data"=>[]
     ];
 
-    public function __construct($opts = array(), $tpl_dir = "/views/admin/")
+    public function __construct($opts = array(), $tpl_dir = "/views/")
     {
 
         $this->options = array_merge($this->defaults, $opts); # caso passe valores, substitue os padroes
         
 	    $config = array(
-            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir,         # diretorio root do servidor / pasta de htmtl
+            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir,          # diretorio root do servidor / pasta de htmtl
             "cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",   # pasta de cache
             "debug"         => false
        );
