@@ -2,6 +2,7 @@
 
 use \Joaovictorbs\Page;
 use \Joaovictorbs\Model\Product;
+use \Joaovictorbs\Model\Category;
 
 $app->get('/', function() {
     
@@ -16,5 +17,19 @@ $app->get('/', function() {
 	# acaba chamando o construtor e criando o footer
 });
 
+$app->get("/categories/:idcategory", function($idcategory){
+
+	$category = new Category();
+
+	$category->get((int)$idcategory);
+
+	$page = new Page();
+
+	$page->setTpl("category", [
+		'category'=>$category->getValues(),
+		'products'=>Product::checkList($category->getProducts())
+	]);
+
+});
 
 ?>
