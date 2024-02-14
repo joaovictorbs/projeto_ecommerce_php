@@ -17,17 +17,30 @@ $app->get('/', function() {
 	# acaba chamando o construtor e criando o footer
 });
 
-$app->get("/categories/:idcategory", function($idcategory){
+$app->get("/categories/:idcategory", function($idcategory){ # paginacao
 
+	$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; #recebe pagina
+	
 	$category = new Category();
 
 	$category->get((int)$idcategory);
 
+	$pagination = $category->getProductsPage($page);
+
+	$pages = [];
+
+	for ($i=1; $i <= $pagination['pages']; $i++) {
+		array_push($pages, [
+			'link'=>'/categories/'. $category->getidcategory() . '?page=' . $i,
+			'page'=>$i
+		]);
+	}
 	$page = new Page();
 
 	$page->setTpl("category", [
 		'category'=>$category->getValues(),
-		'products'=>Product::checkList($category->getProducts())
+		'products'=>$pagination["data"],
+		'pages'=>$pages
 	]);
 
 });
