@@ -14,6 +14,44 @@ Class User extends Model{
 	const SECRET_IV = "";
 
 
+    public static function getFromSession()
+    {
+        if (isset($_SESSION[User::SESSION]) && (int) $_SESSION[User::SESSION]['iduser'] > 0) {
+            
+            $user = new User();
+
+            $user->setData($_SESSION[User::SESSION]);
+            
+        }
+        
+        return $user;
+    }
+
+
+    public static function checkLogin($inadmin = true) # verifica se usuario esta logado
+    {
+        if (
+            !isset($_SESSION[User::SESSION])
+            ||
+            !$_SESSION[User::SESSION]
+            ||
+            !(int)$_SESSION[User::SESSION]["iduser"] > 0
+        ) {
+            return false;
+        }
+        else {
+            if ($inadmin === true && (bool)$_SESSION[User::SESSION]['inadmin'] === true) { # verifica se usuario é de administracao
+                return true;
+            }
+            else if ($inadmin === false) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
 
     public static function login($login, $password) 
     {
@@ -53,15 +91,7 @@ Class User extends Model{
 
     public static function verifyLogin($inadmin = true)    # verifica se existe usuario autenticado / se é usuario admin
     {
-        if (            
-            !isset($_SESSION[User::SESSION])
-            ||
-            !$_SESSION[User::SESSION]
-            ||
-            !(int)$_SESSION[User::SESSION]["iduser"] > 0
-            ||
-            (bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin            
-        ) {
+        if (User::checkLogin($inadmin)) {
             header("Location: /admin/login");
             exit;
         }
