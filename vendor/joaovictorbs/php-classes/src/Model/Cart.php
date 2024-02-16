@@ -5,7 +5,7 @@ namespace Joaovictorbs\Model;
 use Exception;
 use \Joaovictorbs\DB\Sql;
 use \Joaovictorbs\Model;
-use \Joaovictorbs\Product;
+use \Joaovictorbs\Model\Product;
 use \Joaovictorbs\Model\User;
 
 Class Cart extends Model{
@@ -100,6 +100,58 @@ Class Cart extends Model{
         $_SESSION[Cart::SESSION] = $this->getValues();
     }
 
+
+    public function addProduct(Product $product) # adiciona produto no carrinho / instancia da classe 
+    {
+        $sql = new Sql();
+
+        $sql->query("INSERT INTO tb_cartsproducts (idcart, idproduct) VALUES(:idcart, :idproduct)", [
+            ':idcart'=>$this->getidcart(),
+            ':idproduct'=>$product->getidproduct(),
+        ]);
+    }
+
+
+    public function removeProduct(Product $product, $all = false) # atualiza data de remocao do carrinho / remove 1 ou mais itens
+    {
+        $sql = new Sql();
+
+        if ($all) { # remove todos os produtos
+            $sql->query("UPDATE tb_cartsproducts set dtremoved = NOW() WHERE idcart = :idcart AND idproduct = :idproduct AND dtremoved IS NULL", [
+                ':idcart'=>$this->getidcart(),
+                ':idproduct'=>$product->getidproduct(),
+            ]);
+        }
+        else { # remove somente 1 produto
+            $sql->query("UPDATE tb_cartsproducts set dtremoved = NOW() WHERE idcart = :idcart AND idproduct = :idproduct 
+                         AND dtremoved IS NULL LIMIT 1"
+            , [
+                ':idcart'=>$this->getidcart(),
+                ':idproduct'=>$product->getidproduct(),
+            ]);
+        }
+
+    }
+
+
+    public function getProducts() # recupera produtos do carrinho
+    {
+        $sql = new Sql();
+
+        $rows = $sql->select("SELECT b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllength, b.vlweight, b.desurl, COUNT(*) as nrqtd, SUM(b.vlprice) as vltotal
+                             FROM tb_cartsproducts a 
+                             INNER JOIN tb_products b ON a.idproduct = b.idproduct 
+                             WHERE a.idcart = :idcart 
+                             AND a.dtremoved IS NULL 
+                             GROUP BY b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllength, b.vlweight, b.desurl
+                             ORDER BY b.desproduct
+                           ", [
+                            'idcart'=>$this->getidcart()
+                           ]);
+
+        return Product::checkList($rows);
+
+    }
 
 }
 
