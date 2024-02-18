@@ -4,6 +4,8 @@ use \Joaovictorbs\Page;
 use \Joaovictorbs\Model\Product;
 use \Joaovictorbs\Model\Category;
 use \Joaovictorbs\Model\Cart;
+use \Joaovictorbs\Model\Address;
+use \Joaovictorbs\Model\User;
 
 $app->get('/', function() {
     
@@ -136,5 +138,60 @@ $app->post("/cart/freight", function(){
 	header("Location: /cart");
 	exit;
 });
+
+
+$app->get("/checkout", function(){ # so realiza checkout da compra se estiver logado
+
+	User::verifyLogin(false);
+
+	$cart = Cart::getFromSession();
+
+	$address = new Address();
+
+	$page = new Page();
+
+	$page->setTpl("checkout", [
+		'cart'=>$cart->getValues(),
+		'address'=>$address->getValues(),
+	]);
+});
+
+
+$app->get("/login", function(){ # tela de login
+
+	$page = new Page();
+
+	$page->setTpl("login", [
+		'error'=>User::getError()
+	]);
+
+});
+
+$app->post("/login", function(){
+
+	try {
+
+		User::login($_POST['login'], $_POST['password']);
+
+	} catch(Exception $e) {
+
+		User::setError($e->getMessage());
+
+	}
+
+	header("Location: /checkout");
+	exit;
+
+});
+
+$app->get("/logout", function(){ # realiza logout
+
+	User::logout();
+
+	header("Location: /login");
+	exit;
+
+});
+
 
 ?>

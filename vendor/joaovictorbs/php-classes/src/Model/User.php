@@ -2,29 +2,32 @@
 
 namespace Joaovictorbs\Model;
 
-use Exception;
+use \Exception;
 use \Joaovictorbs\DB\Sql;
 use \Joaovictorbs\Model;
 use \Joaovictorbs\Mailer;
 
 Class User extends Model{
 
-    const SESSION = "User"; # constante para sessao dos dados
-    const SECRET = ""; # constante para chave de recuperacao de senha / deve ser 16 bits
-	const SECRET_IV = "";
+    const SESSION           = "User"; # constante para sessao dos dados
+    const SECRET            = ""; # constante para chave de recuperacao de senha / deve ser 16 bits
+	const SECRET_IV         = "";
+	const ERROR             = "UserError";
+	const ERROR_REGISTER    = "UserErrorRegister";
 
 
     public static function getFromSession()
     {
-        if (isset($_SESSION[User::SESSION]) && (int) $_SESSION[User::SESSION]['iduser'] > 0) {
-            
-            $user = new User();
+		$user = new User();
 
-            $user->setData($_SESSION[User::SESSION]);
-            
-        }
-        
-        return $user;
+		if (isset($_SESSION[User::SESSION]) && (int)$_SESSION[User::SESSION]['iduser'] > 0) {
+
+			$user->setData($_SESSION[User::SESSION]);
+
+		}
+
+		return $user;
+
     }
 
 
@@ -57,7 +60,7 @@ Class User extends Model{
     {
         $sql = new Sql();
 
-        $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array( # busca login
+        $results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b ON a.idperson = b.idperson WHERE a.deslogin = :LOGIN", array( # busca login
             ":LOGIN"=>$login
         ));
 
@@ -69,6 +72,8 @@ Class User extends Model{
 
         if (password_verify($password, $data["despassword"]) === true) { # retorna se hash é igual a senha
             $user = new User();
+
+            $data['desperson'] = utf8_encode($data['desperson']);
 
             $user->setData($data); # com a quantidade de campos, criamos os atributos de cada campo
         
@@ -89,13 +94,21 @@ Class User extends Model{
     }
 
 
-    public static function verifyLogin($inadmin = true)    # verifica se existe usuario autenticado / se é usuario admin
-    {
-        if (User::checkLogin($inadmin)) {
-            header("Location: /admin/login");
-            exit;
-        }
-    }
+	public static function verifyLogin($inadmin = true)
+	{
+
+		if (!User::checkLogin($inadmin)) {
+
+			if ($inadmin) {
+				header("Location: /admin/login");
+			} else {
+				header("Location: /login");
+			}
+			exit;
+
+		}
+
+	}
 
 
     public static function listAll()    # lista todos os usuarios
@@ -112,9 +125,9 @@ Class User extends Model{
 
         # chama procedure com dados já setados
         $results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
-            ":desperson"=>$this->getdesperson(),
+            ":desperson"=>utf8_decode($this->getdesperson()),
             ":deslogin"=>$this->getdeslogin(),
-            ":despassword"=>$this->getdespassword(),
+            ":despassword"=>User::getPasswordhash($this->getdespassword()),
             ":desemail"=>$this->getdesemail(),
             ":nrphone"=>$this->getnrphone(),
             ":inadmin"=>$this->getinadmin()
@@ -132,7 +145,11 @@ Class User extends Model{
             ":iduser"=>$iduser
         ));
 
-        $this->setData($results[0]);
+        $data = $results[0];
+
+        $data['desperson'] = utf8_encode($data['desperson']);
+
+        $this->setData($data);
     }
 
 
@@ -142,9 +159,9 @@ Class User extends Model{
 
         $results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
             ":iduser"=>$this->getiduser(),
-            ":desperson"=>$this->getdesperson(),
+            ":desperson"=>utf8_decode($this->getdesperson()),
             ":deslogin"=>$this->getdeslogin(),
-            ":despassword"=>$this->getdespassword(),
+            ":despassword"=>User::getPasswordhash($this->getdespassword()),
             ":desemail"=>$this->getdesemail(),
             ":nrphone"=>$this->getnrphone(),
             ":inadmin"=>$this->getinadmin()
@@ -224,7 +241,7 @@ Class User extends Model{
                                  WHERE
                                      a.idrecovery = :idrecovery
                                  AND
-                                     A.dtrecovery IS NULL
+                                     a.dtrecovery IS NULL
                                  AND
                                      DATE_ADD(a.dtregister, INTERVAL 1 HOUR) >= NOW();
                                 ", array(
@@ -257,6 +274,45 @@ Class User extends Model{
             "password"=>$password,
             "iduser"=>$this->getiduser()
         ));
+    }
+
+
+	public static function setError($msg)
+	{
+
+		$_SESSION[User::ERROR] = $msg;
+
+	}
+
+	public static function getError()
+	{
+
+		$msg = (isset($_SESSION[User::ERROR]) && $_SESSION[User::ERROR]) ? $_SESSION[User::ERROR] : '';
+
+		User::clearError();
+
+		return $msg;
+
+	}
+
+	public static function clearError()
+	{
+
+		$_SESSION[User::ERROR] = NULL;
+
+	}
+
+
+    public static function setErrorRegister($msg)
+    {
+        $_SESSION[User::ERROR_REGISTER] = $msg;
+    }
+
+    public static function getPasswordhash($password) # realiza hash da senha
+    {
+        return password_hash($password, PASSWORD_DEFAULT, [
+            'cost'=>12
+        ]);
     }
 
 }
