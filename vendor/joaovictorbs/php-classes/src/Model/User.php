@@ -181,7 +181,7 @@ Class User extends Model{
     }
 
 
-    public static function getForgot($email)
+    public static function getForgot($email, $inadmin = true)
     {
         $sql = new Sql();
 
@@ -210,8 +210,13 @@ Class User extends Model{
 
 				$code = base64_encode($code);
 
-                $link = "http://www.projetoecommercephp.com.br/admin/forgot/reset?code=$code";
-
+                if ($inadmin === true){
+                    $link = "http://www.projetoecommercephp.com.br/admin/forgot/reset?code=$code";
+                }
+                else {
+                    $link = "http://www.projetoecommercephp.com.br/forgot/reset?code=$code";
+                }
+                
                 $mailer = new Mailer($data["desemail"], $data["desperson"], "Redefinir senha E-commerce Store", "forgot",
                  array(
                     "name"=>$data["desperson"],
