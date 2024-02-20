@@ -12,6 +12,7 @@ Class User extends Model{
     const SESSION           = "User"; # constante para sessao dos dados
     const SECRET            = ""; # constante para chave de recuperacao de senha / deve ser 16 bits
 	const SECRET_IV         = "";
+	const SUCCESS           = "UserSuccess";
 	const ERROR             = "UserError";
 	const ERROR_REGISTER    = "UserErrorRegister";
 
@@ -282,12 +283,41 @@ Class User extends Model{
     }
 
 
+	public static function setSuccess($msg)
+	{
+
+		$_SESSION[User::SUCCESS] = $msg;
+
+	}
+
+
+	public static function getSuccess()
+	{
+
+		$msg = (isset($_SESSION[User::SUCCESS]) && $_SESSION[User::SUCCESS]) ? $_SESSION[User::SUCCESS] : '';
+
+		User::clearSuccess();
+
+		return $msg;
+
+	}
+
+
+	public static function clearSuccess()
+	{
+
+		$_SESSION[User::SUCCESS] = NULL;
+
+	}
+
+
 	public static function setError($msg)
 	{
 
 		$_SESSION[User::ERROR] = $msg;
 
 	}
+
 
 	public static function getError()
 	{
@@ -299,6 +329,7 @@ Class User extends Model{
 		return $msg;
 
 	}
+
 
 	public static function clearError()
 	{

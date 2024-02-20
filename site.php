@@ -313,4 +313,60 @@ $app->post("/forgot/reset", function(){
 });
 
 
+$app->get("/profile", function(){
+	User::verifyLogin(false);
+
+	$user = User::getFromSession();
+
+	$page = new Page();
+
+	$page->setTpl("profile", [
+		'user'=>$user->getValues(),
+		'profileMsg'=>User::getSuccess(),
+		'profileError'=>User::getError()
+	]);
+});
+
+
+$app->post("/profile", function(){
+	User::verifyLogin(false);
+
+	$user = User::getFromSession();
+
+	if (!isset($_POST['desperson']) || $_POST['desperson'] === '') {
+		User::setError("Por favor, preencha o seu nome.");
+		header('Location: /profile');
+		exit;
+	}
+
+	if (!isset($_POST['desemail']) || $_POST['desemail'] === '') {
+		User::setError("Por favor, preencha o seu e-mail.");
+		header('Location: /profile');
+		exit;
+	}
+
+	if ($_POST['desemail'] !== $user->getdesemail()) {
+		if (User::checkLoginExist($_POST['desemail']) === true) {
+			User::setError("Endereço de e-mail já existente.");
+			header('Location: /profile');
+			exit;
+		}
+	}
+
+
+	$_POST['inadmin'] 		= $user->getinadmin();
+	$_POST['despassword'] 	= $user->getdespassword();
+	$_POST['deslogin'] 		= $user->getdeslogin(); # mantem senha, inadmin e email
+
+
+	$user->setData($_POST);
+
+	$user->update();
+
+	User::setSuccess("Dados alterados com sucesso!");
+
+	header('Location: /profile');
+	exit;
+});
+
 ?>
