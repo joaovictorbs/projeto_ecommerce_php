@@ -293,7 +293,7 @@ Class Cart extends Model{
 
     public function getCalculateTotal()
     {
-        $this->updateFreight();
+        // $this->updateFreight();
 
         $totals = $this->getProductsTotals();
 

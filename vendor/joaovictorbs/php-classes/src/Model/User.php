@@ -74,7 +74,7 @@ Class User extends Model{
         if (password_verify($password, $data["despassword"]) === true) { # retorna se hash é igual a senha
             $user = new User();
 
-            $data['desperson'] = utf8_encode($data['desperson']);
+            $data['desperson'] = $data['desperson'];
 
             $user->setData($data); # com a quantidade de campos, criamos os atributos de cada campo
         
@@ -126,7 +126,7 @@ Class User extends Model{
 
         # chama procedure com dados já setados
         $results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
-            ":desperson"=>utf8_decode($this->getdesperson()),
+            ":desperson"=>$this->getdesperson(),
             ":deslogin"=>$this->getdeslogin(),
             ":despassword"=>User::getPasswordhash($this->getdespassword()),
             ":desemail"=>$this->getdesemail(),
@@ -148,7 +148,7 @@ Class User extends Model{
 
         $data = $results[0];
 
-        $data['desperson'] = utf8_encode($data['desperson']);
+        $data['desperson'] = $data['desperson'];
 
         $this->setData($data);
     }
@@ -160,7 +160,7 @@ Class User extends Model{
 
         $results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
             ":iduser"=>$this->getiduser(),
-            ":desperson"=>utf8_decode($this->getdesperson()),
+            ":desperson"=>$this->getdesperson(),
             ":deslogin"=>$this->getdeslogin(),
             ":despassword"=>User::getPasswordhash($this->getdespassword()),
             ":desemail"=>$this->getdesemail(),
