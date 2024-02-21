@@ -8,7 +8,7 @@ use \Joaovictorbs\Model;
 use \Joaovictorbs\Model\Product;
 use \Joaovictorbs\Model\User;
 
-Class Cart extends Model{
+Class Cart extends Model {
 
     const SESSION = "Cart"; # sessao associada ao carrinho
 	const SESSION_ERROR = "CartError";
