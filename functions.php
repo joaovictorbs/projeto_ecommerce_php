@@ -1,6 +1,7 @@
 <?php
 
 use \Joaovictorbs\Model\User;
+use \Joaovictorbs\Model\Cart;
 
 function formatPrice($vlprice)
 {
@@ -24,6 +25,26 @@ function getUserName()
     $user = User::getFromSession();
     
     return $user->getdesperson();
+}
+
+
+function getCartNrQtd() # pega quantidade de itens no carrinho
+{
+    $cart = Cart::getFromSession();
+
+    $totals = $cart->getProductsTotals();
+
+    return $totals['nrqtd'];   
+}
+
+
+function getCartVlSubtotal() # pega valor subtotal do carrinho
+{
+    $cart = Cart::getFromSession();
+
+    $totals = $cart->getProductsTotals();
+
+    return formatPrice($totals['vlprice']);   
 }
 
 ?>
