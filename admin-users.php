@@ -52,6 +52,60 @@ $app->get('/admin/users/create', function() { # cria novo usuario
 });
 
 
+$app->get('/admin/users/:iduser/password', function($iduser) {
+    
+	User::verifyLogin();
+
+	$user = new User();
+
+	$user->get((int)$iduser);
+
+	$page = new PageAdmin();
+
+	$page->setTpl("users-password", [
+		"user"=>$user->getValues(),
+		"msgError"=>User::getError(),
+		"msgSuccess"=>User::getSuccess()
+	]);
+
+});
+
+
+$app->post('/admin/users/:iduser/password', function($iduser) { # altera senha do usuario
+    
+	User::verifyLogin();
+
+	if(!isset($_POST['despassword']) || $_POST['despassword'] === '') {
+		User::setError("Por favor, preencha a nova senha.");
+		header("Location: /admin/users/$iduser/password");
+		exit;
+	}
+
+	if(!isset($_POST['despassword-confirm']) || $_POST['despassword-confirm'] === '') {
+		User::setError("Por favor, confirme a nova senha.");
+		header("Location: /admin/users/$iduser/password");
+		exit;
+	}
+
+	if($_POST['despassword'] !== $_POST['despassword-confirm']) {
+		User::setError("As senhas devem ser iguais.");
+		header("Location: /admin/users/$iduser/password");
+		exit;
+	}
+
+	$user = new User();
+
+	$user->get((int)$iduser);
+
+	$user->setPassword(User::getPasswordhash($_POST['despassword'])); # salva senha e aplica hash
+
+	User::setSuccess("Senha alterada com sucesso!");
+	header("Location: /admin/users/$iduser/password");
+	exit;
+
+});
+
+
 $app->get('/admin/users/:iduser/delete', function($iduser) { # exclui usuario
     
 	User::verifyLogin();
