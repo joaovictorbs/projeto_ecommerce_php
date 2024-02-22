@@ -11,7 +11,7 @@ $app->get("/admin/categories", function(){
 	User::verifyLogin();
 
 	$search = (isset($_GET['search'])) ? $_GET['search'] : "";
-	$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+	$page 	= (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
 
 	$pagination = Category::getPage($page);
 
@@ -31,8 +31,6 @@ $app->get("/admin/categories", function(){
 			'text'=>$x+1
 		]);
 	}
-
-	$categories = Category::listAll();
 
 	$page = new PageAdmin();
 
