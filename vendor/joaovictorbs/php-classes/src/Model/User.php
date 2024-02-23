@@ -2,7 +2,6 @@
 
 namespace Joaovictorbs\Model;
 
-use \Exception;
 use \Joaovictorbs\DB\Sql;
 use \Joaovictorbs\Model;
 use \Joaovictorbs\Mailer;

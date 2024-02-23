@@ -11,6 +11,7 @@ $app->get('/admin', function() { # acesso ao admin
 	$page = new PageAdmin();
 
 	$page->setTpl("index"); # nao identifica que é o index admin
+	
 });
 
 
@@ -22,6 +23,7 @@ $app->get('/admin/login', function() { # acesso ao login do admin
 	]);
 
 	$page->setTpl("login");
+
 });
 
 
@@ -52,6 +54,7 @@ $app->get('/admin/forgot', function() {
 	]);
 
 	$page->setTpl("forgot");
+
 });
 
 
@@ -61,6 +64,7 @@ $app->post('/admin/forgot', function() {
 	
 	header("Location: /admin/forgot/sent");
 	exit;
+
 });
 
 
@@ -72,6 +76,7 @@ $app->get("/admin/forgot/sent", function(){
 	]);
 
 	$page->setTpl("forgot-sent");
+
 });
 
 
@@ -88,6 +93,7 @@ $app->get("/admin/forgot/reset", function(){
 		"name"=>$user["desperson"],
 		"code"=>$_GET["code"]
 	));
+
 });
 
 
@@ -113,6 +119,7 @@ $app->post("/admin/forgot/reset", function(){
 	]);
 
 	$page->setTpl("forgot-reset-success");
+
 });
 
 ?>

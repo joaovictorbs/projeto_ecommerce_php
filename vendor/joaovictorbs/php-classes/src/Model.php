@@ -3,6 +3,7 @@
 namespace Joaovictorbs;
 
 class Model {
+    
     private $values = [];
 
     public function __call($name, $args) # toda vez que metodo é chamado / nome do metodo e parametros

@@ -2,7 +2,6 @@
 
 namespace Joaovictorbs\Model;
 
-use Exception;
 use \Joaovictorbs\DB\Sql;
 use \Joaovictorbs\Model;
 use \Joaovictorbs\Model\Product;
@@ -10,7 +9,7 @@ use \Joaovictorbs\Model\User;
 
 Class Cart extends Model {
 
-    const SESSION = "Cart"; # sessao associada ao carrinho
+    const SESSION       = "Cart"; # sessao associada ao carrinho
 	const SESSION_ERROR = "CartError";
 
 

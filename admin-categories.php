@@ -1,6 +1,5 @@
 <?php
 
-use \Joaovictorbs\Page;
 use \Joaovictorbs\PageAdmin;
 use \Joaovictorbs\Model\User;
 use \Joaovictorbs\Model\Category;
@@ -98,6 +97,7 @@ $app->get("/admin/categories/:idcategory", function($idcategory){
 	$page->setTpl("categories-update", [
 		"category"=>$category->getValues()
 	]);
+	
 });
 
 

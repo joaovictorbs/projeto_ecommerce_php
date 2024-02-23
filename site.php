@@ -98,6 +98,7 @@ $app->get("/cart/:idproduct/add", function($idproduct){
 
 	header("Location: /cart");
 	exit;
+
 });
 
 
@@ -113,6 +114,7 @@ $app->get("/cart/:idproduct/minus", function($idproduct){
 
 	header("Location: /cart");
 	exit;
+
 });
 
 
@@ -128,6 +130,7 @@ $app->get("/cart/:idproduct/remove", function($idproduct){
 
 	header("Location: /cart");
 	exit;
+
 });
 
 
@@ -139,6 +142,7 @@ $app->post("/cart/freight", function(){
 
 	header("Location: /cart");
 	exit;
+
 });
 
 
@@ -185,6 +189,7 @@ $app->get("/checkout", function(){ # so realiza checkout da compra se estiver lo
 		'products'=>$cart->getProducts(),
 		'error'=>Address::getMsgError()
 	]);
+
 });
 
 
@@ -356,6 +361,7 @@ $app->get('/forgot', function() {
 	$page = new Page();
 
 	$page->setTpl("forgot");
+
 });
 
 
@@ -365,6 +371,7 @@ $app->post('/forgot', function() {
 	
 	header("Location: /forgot/sent");
 	exit;
+
 });
 
 
@@ -373,6 +380,7 @@ $app->get("/forgot/sent", function(){
 	$page = new Page();
 
 	$page->setTpl("forgot-sent");
+
 });
 
 
@@ -386,6 +394,7 @@ $app->get("/forgot/reset", function(){
 		"name"=>$user["desperson"],
 		"code"=>$_GET["code"]
 	));
+
 });
 
 
@@ -408,6 +417,7 @@ $app->post("/forgot/reset", function(){
 	$page = new Page();
 
 	$page->setTpl("forgot-reset-success");
+
 });
 
 
@@ -424,6 +434,7 @@ $app->get("/profile", function(){
 		'profileMsg'=>User::getSuccess(),
 		'profileError'=>User::getError()
 	]);
+
 });
 
 
@@ -453,7 +464,6 @@ $app->post("/profile", function(){
 		}
 	}
 
-
 	$_POST['inadmin'] 		= $user->getinadmin();
 	$_POST['despassword'] 	= $user->getdespassword();
 	$_POST['deslogin'] 		= $user->getdeslogin(); # mantem senha, inadmin e email
@@ -467,6 +477,7 @@ $app->post("/profile", function(){
 
 	header('Location: /profile');
 	exit;
+
 });
 
 
@@ -483,6 +494,7 @@ $app->get("/order/:idorder", function($idorder){
 	$page->setTpl("payment", [
 		'order'=>$order->getValues()
 	]);
+
 });
 
 
@@ -617,6 +629,7 @@ $app->get("/profile/change-password", function(){
 		'changePassError'=>User::getError(),
 		'changePassSuccess'=>User::getSuccess()
 	]);
+
 });
 
 
@@ -669,6 +682,7 @@ $app->post("/profile/change-password", function(){ # altera senha
 	User::setSuccess("Senha alterada com sucesso!");
 	header("Location: /profile/change-password");
 	exit;
+	
 });
 
 

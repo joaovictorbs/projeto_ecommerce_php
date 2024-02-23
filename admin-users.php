@@ -3,7 +3,6 @@
 use \Joaovictorbs\PageAdmin;
 use \Joaovictorbs\Model\User;
 
-
 $app->get('/admin/users', function() { # lista usuarios
     
 	User::verifyLogin();
@@ -100,6 +99,7 @@ $app->post('/admin/users/:iduser/password', function($iduser) { # altera senha d
 	$user->setPassword(User::getPasswordhash($_POST['despassword'])); # salva senha e aplica hash
 
 	User::setSuccess("Senha alterada com sucesso!");
+
 	header("Location: /admin/users/$iduser/password");
 	exit;
 
@@ -118,6 +118,7 @@ $app->get('/admin/users/:iduser/delete', function($iduser) { # exclui usuario
 
 	header("Location: /admin/users");
 	exit;
+
 });
 
 
@@ -152,6 +153,7 @@ $app->post('/admin/users/create', function() { # recebe os dados para criar usua
 
 	header("Location: /admin/users");
 	exit;
+
 });
 
 

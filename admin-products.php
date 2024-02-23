@@ -4,7 +4,6 @@ use Joaovictorbs\PageAdmin;
 use \Joaovictorbs\Model\User;
 use Joaovictorbs\Model\Product;
 
-
 $app->get("/admin/products", function(){
     
     User::verifyLogin();
@@ -38,6 +37,7 @@ $app->get("/admin/products", function(){
 		"search"=>$search,
 		"pages"=>$pages
     ]);
+
 });
 
 
@@ -48,6 +48,7 @@ $app->get("/admin/products/create", function(){
     $page = new PageAdmin();
 
     $page->setTpl("products-create");
+	
 });
 
 

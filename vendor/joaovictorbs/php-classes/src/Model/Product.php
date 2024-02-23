@@ -2,10 +2,8 @@
 
 namespace Joaovictorbs\Model;
 
-use Exception;
 use \Joaovictorbs\DB\Sql;
 use \Joaovictorbs\Model;
-use \Joaovictorbs\Mailer;
 
 Class Product extends Model{
 
@@ -158,7 +156,7 @@ Class Product extends Model{
         $sql = new Sql();
 
         return $sql->select("SELECT * FROM tb_categories a INNER JOIN tb_productscategories b on A.idcategory = b.idcategory WHERE b.idproduct = :idproduct", [
-            ':idproduct'=>$this->getidproduct()
+            ':idproduct'=>$this->getidproductadmi()
         ]);
     }
 
